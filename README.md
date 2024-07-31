@@ -1,7 +1,7 @@
 <h1 align="center">📂Task Manager</h1>
 
 <p align="center">
-  <img alt="projeto taskmanager" src="https://github.com/user-attachments/assets/7ec02dd1-845a-4698-b5b1-f82658693ad3" width="100%">
+  <img alt="projeto taskmanager" src="https://github.com/user-attachments/assets/c1873f2c-d35e-4d4a-a596-790bcbd49cda" width="100%">
 </p>
 
 ## 🛠️ Tecnologias
