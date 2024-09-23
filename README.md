@@ -1,4 +1,4 @@
-<h1 align="center">📂Task Manager</h1>
+<h1 align="center">📂Task Manage</h1>
 
 <p align="center">
   <img alt="projeto taskmanager" src="https://github.com/user-attachments/assets/c1873f2c-d35e-4d4a-a596-790bcbd49cda" width="50%">
