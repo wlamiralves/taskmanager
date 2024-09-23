@@ -361,5 +361,5 @@ class TaskManager:
 if __name__ == '__main__':
     root = tk.Tk()
     app = TaskManager(root)
-    root.geometry('800x500')  # Define o tamanho inicial da janel
+    root.geometry('800x500')  # Define o tamanho inicial da janela
     root.mainloop()
