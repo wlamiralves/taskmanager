@@ -11,24 +11,24 @@ class TaskManager:
         self.root = root
         self.root.title('Gerenciador de Tarefas')
 
-        # Lista para armazenar as tarefas
+        
         self.tasks = []
         self.deleted_tasks = []
 
-        # Configurações do banco de dados
+        
         self.conn = sqlite3.connect('task_manager.db')
         self.cursor = self.conn.cursor()
         self.create_tables()
 
-        # Estilos
+      
         self.font_large = ('Helvetica', 18, 'bold')
         self.font_medium = ('Helvetica', 12)
-        self.bg_color = '#f7f7f7'  # Cor de fundo
-        self.button_fg = '#333333'  # Cor do texto dos botões
-        self.button_bg = '#d0d0d0'  # Cor de fundo dos botões
-        self.button_active_bg = '#c0c0c0'  # Cor de fundo dos botões ao passar o mouse
+        self.bg_color = '#f7f7f7'  
+        self.button_fg = '#333333' 
+        self.button_bg = '#d0d0d0'  
+        self.button_active_bg = '#c0c0c0'  
 
-        # Mapeamento de prioridades para cores de fundo
+       
         self.priority_button_colors = {
             'alta': '#ffdddd',
             'média': '#fff5cc',
@@ -40,54 +40,54 @@ class TaskManager:
             'baixa': '#ccffcc'
         }
 
-        # Configuração da interface gráfica
+        
         self.setup_gui()
 
-        # Carregar tarefas iniciais
+       
         self.load_tasks_from_file()
 
-        # Contagem inicial de tarefas
+        
         self.update_task_count()
 
     def setup_gui(self):
-        # Frame principal
+        
         self.main_frame = tk.Frame(self.root, padx=20, pady=20, bg=self.bg_color)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Centraliza o frame principal na tela
+       
         self.main_frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-        # Título
+       
         self.title_label = tk.Label(self.main_frame, text='Gerenciador de Tarefas', font=self.font_large, bg=self.bg_color)
         self.title_label.grid(row=0, column=0, columnspan=4, pady=(0, 10))
 
-        # Frame para entrada de tarefas e exibição
+        
         self.tasks_frame = tk.Frame(self.main_frame, bg=self.bg_color)
         self.tasks_frame.grid(row=1, column=0, columnspan=4, padx=10, pady=10, sticky='nsew')
 
-        # Caixa de entrada de tarefas
+        
         self.task_entry = tk.Entry(self.tasks_frame, width=50, font=self.font_medium)
         self.task_entry.grid(row=0, column=0, padx=10, pady=10, sticky='ew')
 
-        # Botão para adicionar tarefa
+        
         self.add_button = tk.Button(self.tasks_frame, text='Adicionar', font=self.font_medium, bg=self.button_bg, fg=self.button_fg, activebackground=self.button_active_bg, command=self.add_task_gui)
         self.add_button.grid(row=0, column=1, padx=10, pady=10, sticky='ew')
 
-        # Listbox para exibição de tarefas
+        
         self.tasks_listbox = tk.Listbox(self.tasks_frame, width=60, height=15, font=self.font_medium, selectmode=tk.SINGLE, bg='#ffffff', bd=2, relief=tk.SUNKEN)
         self.tasks_listbox.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky='nsew')
 
-        # Scrollbar para Listbox
+       
         self.scrollbar = tk.Scrollbar(self.tasks_frame, orient=tk.VERTICAL, command=self.tasks_listbox.yview)
-        self.scrollbar.grid(row=1, column=2, sticky='ns')  # Ao lado do Listbox
+        self.scrollbar.grid(row=1, column=2, sticky='ns')  
 
         self.tasks_listbox.config(yscrollcommand=self.scrollbar.set)
 
-        # Frame para os botões de interação
+       
         self.button_frame = tk.Frame(self.main_frame, bg=self.bg_color)
         self.button_frame.grid(row=2, column=0, columnspan=4, padx=10, pady=10, sticky='ew')
 
-        # Botões para interação com tarefas
+        
         self.edit_button = tk.Button(self.button_frame, text='Editar', font=self.font_medium, bg=self.button_bg, fg=self.button_fg, activebackground=self.button_active_bg, command=self.edit_task_gui)
         self.edit_button.grid(row=0, column=0, padx=5, pady=5, sticky='ew')
 
@@ -103,34 +103,34 @@ class TaskManager:
         self.report_button = tk.Button(self.button_frame, text='Emitir Relatório', font=self.font_medium, bg=self.button_bg, fg=self.button_fg, activebackground=self.button_active_bg, command=self.generate_report)
         self.report_button.grid(row=0, column=4, padx=5, pady=5, sticky='ew')
 
-        # Label para link do perfil do GitHub
+        
         self.github_label = tk.Label(self.main_frame, text='@wlamiralves', font=self.font_medium, fg='#000000', cursor='hand2', bg=self.bg_color)
         self.github_label.grid(row=3, column=0, columnspan=4, pady=(10, 0))
         self.github_label.bind('<Button-1>', lambda event: self.open_github_profile())
 
-        # Configurações de redimensionamento
+        
         self.main_frame.columnconfigure([0, 1, 2, 3, 4], weight=1)
         self.tasks_frame.rowconfigure(1, weight=1)
 
-        # Vincular a tecla Enter ao botão de adicionar tarefa
+       
         self.task_entry.bind('<Return>', self.add_task_on_enter)
 
-        # Adicionar o evento de duplo clique para exibir detalhes da tarefa
+        
         self.tasks_listbox.bind('<Double-1>', self.show_task_details)
 
     def open_github_profile(self):
         webbrowser.open_new_tab('https://github.com/wlamiralves')
 
     def add_task_gui(self):
-        task = self.task_entry.get().strip()  # Remover espaços em branco desnecessários
+        task = self.task_entry.get().strip()  
         if task:
             priority = self.get_task_priority(task)
             self.tasks.append({'task': task, 'priority': priority, 'timestamp': datetime.now()})
-            self.sort_tasks()  # Reordenar tarefas após adição
+            self.sort_tasks()  
             self.update_task_listbox()
-            self.save_tasks_to_file()  # Salvar tarefas após adicionar uma nova tarefa
+            self.save_tasks_to_file()  
             self.update_task_count()
-            self.task_entry.delete(0, tk.END)  # Limpar entrada de tarefa
+            self.task_entry.delete(0, tk.END)  
         else:
             messagebox.showwarning('Tarefa Vazia', 'Digite uma tarefa para adicionar.')
 
@@ -146,9 +146,9 @@ class TaskManager:
             if new_task:
                 priority = self.get_task_priority(new_task)
                 self.tasks[index] = {'task': new_task, 'priority': priority, 'timestamp': datetime.now()}
-                self.sort_tasks()  # Reordenar tarefas após edição
+                self.sort_tasks() 
                 self.update_task_listbox()
-                self.save_tasks_to_file()  # Salvar tarefas após editar uma tarefa
+                self.save_tasks_to_file()  
                 self.root.after(100, self.show_task_edited_message, old_task, new_task)
         except IndexError:
             messagebox.showwarning('Seleção Inválida', 'Por favor, selecione uma tarefa para editar.')
@@ -172,7 +172,7 @@ class TaskManager:
     def remove_task(self, task):
         self.tasks = [t for t in self.tasks if t['task'] != task]
         self.update_task_listbox()
-        self.save_tasks_to_file()  # Salvar tarefas após remover uma tarefa
+        self.save_tasks_to_file()  
         self.update_task_count()
 
     def clear_tasks(self):
@@ -182,7 +182,7 @@ class TaskManager:
                 self.insert_deleted_task_record(task['task'], task['priority'], task['timestamp'])
             self.tasks.clear()
             self.update_task_listbox()
-            self.save_tasks_to_file()  # Salvar tarefas após limpar a lista
+            self.save_tasks_to_file() 
             self.update_task_count()
             messagebox.showinfo('Lista Limpa', 'Lista de tarefas foi limpa.')
 
@@ -209,7 +209,7 @@ class TaskManager:
                 self.tasks.append({'task': selected_task['task'], 'priority': selected_task['priority'], 'timestamp': selected_task['timestamp']})
                 self.sort_tasks()
                 self.update_task_listbox()
-                self.save_tasks_to_file()  # Salvar tarefas após restaurar
+                self.save_tasks_to_file()  
                 self.remove_deleted_task_record(selected_task['task'])
                 restore_window.destroy()
                 self.update_task_count()
@@ -233,8 +233,8 @@ class TaskManager:
         delete_button = tk.Button(restore_window, text='Excluir Permanentemente', command=delete_task)
         delete_button.pack(side=tk.LEFT, padx=5, pady=5)
 
-        restore_listbox.bind('<Double-1>', restore_task)  # Adiciona a funcionalidade de restaurar com duplo clique
-        restore_window.grab_set()  # Torna a janela de restauração modal
+        restore_listbox.bind('<Double-1>', restore_task) 
+        restore_window.grab_set()  
 
     def generate_report(self):
         report_date = simpledialog.askstring('Emitir Relatório', 'Digite a data para o relatório (DD/MM/YYYY):')
@@ -347,7 +347,7 @@ class TaskManager:
 
     def priority_order(self, priority):
         order = {'alta': 1, 'média': 2, 'baixa': 3}
-        return order.get(priority, 4)  # 4 para qualquer outro caso
+        return order.get(priority, 4)  
 
     def show_task_details(self, event):
         try:
@@ -361,5 +361,5 @@ class TaskManager:
 if __name__ == '__main__':
     root = tk.Tk()
     app = TaskManager(root)
-    root.geometry('800x500')  # Define o tamanho inicial da janela
+    root.geometry('800x500')  
     root.mainloop()
